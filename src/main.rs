@@ -6,11 +6,32 @@ use color::Color;
 use env_logger;
 use indicatif::ProgressBar;
 use log;
-use math::vec3::{Point3, Vec3};
+use math::vec3::{dot, Point3, Vec3};
 use ray::Ray;
 use std::{fs::File, io::prelude::*, io::LineWriter};
 
+fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> f64 {
+    let oc = center - r.origin;
+    let a = dot(r.direction, r.direction);
+    let b = -2.0 * dot(r.direction, &oc);
+    let c = dot(&oc, &oc) - radius * radius;
+    let discriminant = b * b - 4.0 * a * c;
+
+    if discriminant < 0.0 {
+        -1.0
+    } else {
+        (-b - discriminant.sqrt()) / 2.0 * a
+    }
+}
+
 fn ray_color(r: &Ray) -> Color {
+    let sph = Point3::new(0.0, 0.0, -1.0);
+    let t = hit_sphere(&sph, 0.5, r);
+    if t > 0.0 {
+        let norm = (r.at(t) - Vec3::new(0.0, 0.0, -1.0)).unit();
+        return Color::new(norm.x() + 1.0, norm.y() + 1.0, norm.z() + 1.0) * 0.5;
+    }
+
     let unit_direction: Vec3 = r.direction.unit();
     let a: f64 = (unit_direction.y() + 1.0) * 0.5;
     Color::new(1.0, 1.0, 1.0) * (1.0 - a) + Color::new(0.5, 0.7, 1.0) * a

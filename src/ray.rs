@@ -12,7 +12,7 @@ impl<'a, 'b> Ray<'a, 'b> {
         Self { origin, direction }
     }
 
-    fn at(&self, t: f64) -> Point3 {
+    pub fn at(&self, t: f64) -> Point3 {
         self.origin + (self.direction * t)
     }
 }
