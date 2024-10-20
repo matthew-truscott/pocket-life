@@ -1,3 +1,7 @@
+#[cfg(test)]
+mod tests;
+
+use std::fmt;
 use std::ops;
 pub struct Vec3 {
     pub e: [f64; 3],
@@ -23,7 +27,7 @@ impl Vec3 {
     }
 
     pub fn length_squared(&self) -> f64 {
-        self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] + self.e[2]
+        self.e[0] * self.e[0] + self.e[1] * self.e[1] + self.e[2] * self.e[2]
     }
 
     pub fn length(&self) -> f64 {
@@ -32,6 +36,26 @@ impl Vec3 {
 
     pub fn unit(&self) -> Vec3 {
         self / self.length()
+    }
+}
+
+impl fmt::Debug for Vec3 {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Point")
+            .field("x", &self.e[0])
+            .field("y", &self.e[1])
+            .field("z", &self.e[2])
+            .finish()
+    }
+}
+
+impl PartialEq for Vec3 {
+    fn eq(&self, other: &Self) -> bool {
+        self.e == other.e
+    }
+
+    fn ne(&self, other: &Self) -> bool {
+        self.e != other.e
     }
 }
 
@@ -197,10 +221,12 @@ impl ops::Neg for &Vec3 {
     }
 }
 
+#[allow(dead_code)]
 pub fn dot(u: &Vec3, v: &Vec3) -> f64 {
     u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2]
 }
 
+#[allow(dead_code)]
 pub fn cross(u: &Vec3, v: &Vec3) -> Vec3 {
     Vec3::new(
         u.e[1] * v.e[2] - u.e[2] * v.e[1],
