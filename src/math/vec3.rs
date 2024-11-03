@@ -51,6 +51,10 @@ impl Vec3 {
         }
     }
 
+    pub fn reflect(v: &Vec3, n: &Vec3) -> Self {
+        v - &(n * 2.0 * Vec3::dot(v, n))
+    }
+
     pub fn x(&self) -> f64 {
         self.e[0]
     }
@@ -128,6 +132,11 @@ impl Vec3 {
             u.e[0] * v.e[1] - u.e[1] * v.e[0],
         )
     }
+
+    pub fn near_zero(&self) -> bool {
+        let s = 1e-8;
+        self.e[0].abs() < s && self.e[1].abs() < s && self.e[2].abs() < s
+    }
 }
 
 impl fmt::Debug for Vec3 {
@@ -203,6 +212,27 @@ impl ops::Sub<&Vec3> for &Vec3 {
     type Output = Vec3;
     fn sub(self, rhs: &Vec3) -> Self::Output {
         Vec3::sub(self, rhs)
+    }
+}
+
+impl ops::Mul<Vec3> for Vec3 {
+    type Output = Vec3;
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3::mul(&self, &rhs)
+    }
+}
+
+impl ops::Mul<Vec3> for &Vec3 {
+    type Output = Vec3;
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3::mul(self, &rhs)
+    }
+}
+
+impl ops::Mul<&Vec3> for Vec3 {
+    type Output = Vec3;
+    fn mul(self, rhs: &Vec3) -> Self::Output {
+        Vec3::mul(&self, rhs)
     }
 }
 

@@ -109,9 +109,11 @@ impl Camera {
 
         let interval: Interval = Interval::with_bounds(0.001, f64::INFINITY);
         if let Some(hit) = world.hit(r, &interval) {
-            let direction: Vec3 = hit.normal + Vec3::random_unit();
-            let ray = Ray::new(hit.p, direction);
-            return self.ray_color(&ray, depth - 1, world) * 0.1;
+            let material = hit.mat.as_ref().unwrap().clone();
+            if let Some(scattered) = material.scatter(r, &hit) {
+                return self.ray_color(&scattered.ray, depth - 1, world) * scattered.attenuation;
+            }
+            return Color::new(0.0, 0.0, 0.0);
         }
 
         let unit_direction: Vec3 = r.direction.unit();
