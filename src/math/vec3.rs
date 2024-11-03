@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod tests;
 
+use super::random;
 use std::fmt;
 use std::ops;
 
@@ -13,6 +14,41 @@ pub type Point3 = Vec3;
 impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Self { e: [x, y, z] }
+    }
+
+    pub fn random() -> Self {
+        Vec3 {
+            e: [random::random(), random::random(), random::random()],
+        }
+    }
+
+    pub fn random_range(min: f64, max: f64) -> Self {
+        Vec3 {
+            e: [
+                random::random_range(min, max),
+                random::random_range(min, max),
+                random::random_range(min, max),
+            ],
+        }
+    }
+
+    pub fn random_unit() -> Self {
+        loop {
+            let p = Vec3::random_range(-1.0, 1.0);
+            let p_sq = p.length_squared();
+            if 1e-160 < p_sq && p_sq <= 1.0 {
+                return p / p_sq.sqrt();
+            }
+        }
+    }
+
+    pub fn random_on_hemisphere(normal: &Vec3) -> Self {
+        let on_unit_sphere = Vec3::random_unit();
+        if Vec3::dot(&on_unit_sphere, normal) > 0.0 {
+            on_unit_sphere
+        } else {
+            -on_unit_sphere
+        }
     }
 
     pub fn x(&self) -> f64 {
