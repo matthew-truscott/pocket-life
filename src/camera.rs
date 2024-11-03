@@ -109,7 +109,7 @@ impl Camera {
 
         let interval: Interval = Interval::with_bounds(0.001, f64::INFINITY);
         if let Some(hit) = world.hit(r, &interval) {
-            let direction: Vec3 = Vec3::random_on_hemisphere(&hit.normal);
+            let direction: Vec3 = hit.normal + Vec3::random_unit();
             let ray = Ray::new(hit.p, direction);
             return self.ray_color(&ray, depth - 1, world) * 0.5;
         }
