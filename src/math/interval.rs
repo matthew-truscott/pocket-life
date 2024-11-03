@@ -27,6 +27,10 @@ impl Interval {
         self.min < x && x < self.max
     }
 
+    pub fn clamp(&self, x: f64) -> f64 {
+        x.min(self.max).max(self.min)
+    }
+
     const EMPTY: Self = Self {
         min: f64::INFINITY,
         max: -f64::INFINITY,
