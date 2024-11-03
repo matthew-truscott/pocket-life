@@ -111,7 +111,7 @@ impl Camera {
         if let Some(hit) = world.hit(r, &interval) {
             let direction: Vec3 = hit.normal + Vec3::random_unit();
             let ray = Ray::new(hit.p, direction);
-            return self.ray_color(&ray, depth - 1, world) * 0.5;
+            return self.ray_color(&ray, depth - 1, world) * 0.1;
         }
 
         let unit_direction: Vec3 = r.direction.unit();

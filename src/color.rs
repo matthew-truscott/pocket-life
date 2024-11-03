@@ -23,12 +23,22 @@ impl Rgb for Color {
     }
 }
 
+fn linear_to_gamma(linear_component: f64) -> f64 {
+    if linear_component > 0.0 {
+        return linear_component.sqrt();
+    }
+    return 0.0;
+}
+
 impl Display for Color {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let intensity = Interval::with_bounds(0.000, 0.999);
-        let ir = (256.0 * intensity.clamp(self.r())) as i32;
-        let ig = (256.0 * intensity.clamp(self.g())) as i32;
-        let ib = (256.0 * intensity.clamp(self.b())) as i32;
-        write!(f, "{0} {1} {2}\n", ir, ig, ib)
+        let r = linear_to_gamma(self.r());
+        let g = linear_to_gamma(self.g());
+        let b = linear_to_gamma(self.b());
+        let rb = (256.0 * intensity.clamp(r)) as i32;
+        let gb = (256.0 * intensity.clamp(g)) as i32;
+        let bb = (256.0 * intensity.clamp(b)) as i32;
+        write!(f, "{0} {1} {2}\n", rb, gb, bb)
     }
 }
