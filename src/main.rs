@@ -10,12 +10,14 @@ use env_logger;
 use hittable::Hittable;
 use indicatif::ProgressBar;
 use log;
+use math::interval::Interval;
 use math::vec3::{Point3, Vec3};
 use ray::Ray;
 use std::{fs::File, io::prelude::*, io::LineWriter};
 
 fn ray_color(r: &Ray, world: &dyn Hittable) -> Color {
-    if let Some(hit) = world.hit(r, 0.0, f64::INFINITY) {
+    let interval: Interval = Interval::with_bounds(0.0, f64::INFINITY);
+    if let Some(hit) = world.hit(r, &interval) {
         return (&hit.normal + Color::new(1.0, 1.0, 1.0)) * 0.5;
     }
 
